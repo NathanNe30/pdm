@@ -37,7 +37,7 @@ class PythonVersionParser(HTMLParser):
 
 
 def dump_python_version_module(dest_file) -> None:
-    resp = requests.get("https://python.org/downloads")
+    resp = requests.get("https://python.org/downloads", timeout=60)
     resp_text = resp.text
     parser = PythonVersionParser()
     parser.feed(resp_text)
