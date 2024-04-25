@@ -6,7 +6,6 @@ import enum
 import logging
 import os
 import warnings
-from tempfile import mktemp
 from typing import TYPE_CHECKING
 
 from rich.box import ROUNDED
@@ -17,6 +16,7 @@ from rich.table import Table
 from rich.theme import Theme
 
 from pdm.exceptions import PDMWarning
+import tempfile
 
 if TYPE_CHECKING:
     from typing import Any, Iterator, Sequence
@@ -229,7 +229,7 @@ class UI:
             handler: logging.Handler = logging.StreamHandler()
             handler.setLevel(LOG_LEVELS[self.verbosity])
         else:
-            file_name = mktemp(".log", f"pdm-{type_}-")
+            file_name = tempfile.mkstemp(".log", f"pdm-{type_}-")
             handler = logging.FileHandler(file_name, encoding="utf-8")
             handler.setLevel(logging.DEBUG)
         handler.setFormatter(logging.Formatter("%(name)s: %(message)s"))
