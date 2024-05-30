@@ -13,6 +13,7 @@ from typing import IO, Any, cast
 
 from pdm.exceptions import PdmUsageError, ProjectError
 from pdm.termui import logger
+from security import safe_command
 
 DIST_EXTENSIONS = {
     ".whl": "bdist_wheel",
@@ -158,14 +159,14 @@ class PackageFile:
     @staticmethod
     def _run_gpg(gpg_args: list[str]) -> None:
         try:
-            subprocess.run(gpg_args, check=True)
+            safe_command.run(subprocess.run, gpg_args, check=True)
             return
         except FileNotFoundError:
             logger.warning("gpg executable not available. Attempting fallback to gpg2.")
 
         gpg_args[0] = "gpg2"
         try:
-            subprocess.run(gpg_args, check=True)
+            safe_command.run(subprocess.run, gpg_args, check=True)
         except FileNotFoundError:
             raise PdmUsageError(
                 "'gpg' or 'gpg2' executables not available.\n"

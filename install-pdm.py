@@ -15,6 +15,7 @@ import urllib.request
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Sequence
+from security import safe_command
 
 if sys.version_info < (3, 8):
     sys.exit("Python 3.8 or above is required to install PDM.")
@@ -39,7 +40,7 @@ FOREGROUND_COLORS = {
 
 def _call_subprocess(args: list[str]) -> int:
     try:
-        return subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True).returncode
+        return safe_command.run(subprocess.run, args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True).returncode
     except subprocess.CalledProcessError as e:
         print(f"An error occurred when executing {args}:", file=sys.stderr)
         print(e.output.decode("utf-8"), file=sys.stderr)

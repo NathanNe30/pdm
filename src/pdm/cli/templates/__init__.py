@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any
 
 from pdm.exceptions import PdmException
 from pdm.utils import normalize_name
+from security import safe_command
 
 if TYPE_CHECKING:
     from importlib.resources.abc import Traversable
@@ -158,7 +159,7 @@ class ProjectTemplate:
         else:
             extra_args = []
         git_command = ["git", "clone", "--recursive", "--depth=1", *extra_args, url, self._path.as_posix()]
-        result = subprocess.run(git_command, capture_output=True, text=True)
+        result = safe_command.run(subprocess.run, git_command, capture_output=True, text=True)
         if result.returncode != 0:
             raise PdmException(f"Failed to clone template from git repository {url}: {result.stderr}")
         shutil.rmtree(self._path / ".git", ignore_errors=True)
