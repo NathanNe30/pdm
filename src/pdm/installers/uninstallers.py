@@ -216,7 +216,7 @@ class BaseRemovePaths(abc.ABC):
             self._paths.update(_cache_file_from_source(normalized_path))
         elif path.replace("\\", "/").endswith(".dist-info/REFER_TO"):
             with open(path, "rb") as f:
-                line = f.readline().decode().strip()
+                line = f.readline(5_000_000).decode().strip()
             if line:
                 self.refer_to = line
 
