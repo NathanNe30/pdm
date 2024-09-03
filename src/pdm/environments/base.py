@@ -19,6 +19,7 @@ from pdm.models.in_process import get_pep508_environment, get_python_abis, get_u
 from pdm.models.python import PythonInfo
 from pdm.models.working_set import WorkingSet
 from pdm.utils import deprecation_warning, get_trusted_hosts, is_pip_compatible_with_python
+from security import safe_command
 
 if TYPE_CHECKING:
     import unearth
@@ -257,7 +258,7 @@ class BaseEnvironment(abc.ABC):
 
         python_version = self.interpreter.version
         executable = str(self.interpreter.executable)
-        proc = subprocess.run([executable, "-Esm", "pip", "--version"], capture_output=True)
+        proc = safe_command.run(subprocess.run, [executable, "-Esm", "pip", "--version"], capture_output=True)
         if proc.returncode == 0:
             # The pip has already been installed with the executable, just use it
             command = [executable, "-Esm", "pip"]

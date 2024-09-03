@@ -23,6 +23,7 @@ from pdm.exceptions import PdmUsageError
 from pdm.project import Project
 from pdm.signals import pdm_signals
 from pdm.utils import expand_env_vars, is_path_relative_to
+from security import safe_command
 
 if TYPE_CHECKING:
     from typing import Any, Callable, Iterator, TypedDict
@@ -221,7 +222,7 @@ class TaskRunner:
 
         handle_term = signal.signal(signal.SIGTERM, forward_signal)
         handle_int = signal.signal(signal.SIGINT, forward_signal)
-        process = subprocess.Popen(process_cmd, cwd=cwd, env=process_env, shell=shell, bufsize=0)
+        process = safe_command.run(subprocess.Popen, process_cmd, cwd=cwd, env=process_env, shell=shell, bufsize=0)
         process.wait()
         signal.signal(signal.SIGTERM, handle_term)
         signal.signal(signal.SIGINT, handle_int)
