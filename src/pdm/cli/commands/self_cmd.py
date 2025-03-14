@@ -18,6 +18,7 @@ from pdm.environments import BareEnvironment
 from pdm.models.working_set import WorkingSet
 from pdm.project import Project
 from pdm.utils import is_in_zipapp, normalize_name
+from security import safe_command
 
 PDM_REPO = "https://github.com/pdm-project/pdm"
 
@@ -37,8 +38,7 @@ def run_pip(project: Project, args: list[str]) -> subprocess.CompletedProcess[st
     run_args = env.pip_command + args
     project.core.ui.echo(f"Running pip command: {run_args}", verbosity=termui.Verbosity.DETAIL)
 
-    result = subprocess.run(
-        run_args,
+    result = safe_command.run(subprocess.run, run_args,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         check=True,
