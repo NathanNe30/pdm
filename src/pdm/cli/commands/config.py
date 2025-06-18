@@ -9,6 +9,7 @@ from pdm.cli.commands.base import BaseCommand
 from pdm.exceptions import PdmUsageError
 from pdm.project import Project
 from pdm.project.config import DEFAULT_REPOSITORIES, REPOSITORY, SOURCE, Config
+from security import safe_command
 
 
 class Command(BaseCommand):
@@ -50,7 +51,7 @@ class Command(BaseCommand):
         import subprocess
 
         editor = self.get_editor()
-        proc = subprocess.Popen(f'{editor} "{path}"', shell=True)
+        proc = safe_command.run(subprocess.Popen, f'{editor} "{path}"', shell=True)
 
         if proc.wait() != 0:
             raise PdmUsageError(f"Editor {editor} exited abnormally")
